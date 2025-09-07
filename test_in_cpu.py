@@ -87,9 +87,36 @@ model = model.to(device)
 model.eval()
 
 image_list = os.listdir('images')
-shutil.rmtree('results')
+if os.path.exists('results'):
+    shutil.rmtree('results')
 os.mkdir('results')
-for i, imgName in enumerate(image_list):
-    img = cv2.imread(os.path.join('images', imgName))
-    img = Run(model, img, device)
-    cv2.imwrite(os.path.join('results', imgName), img)
+
+
+
+# for i, imgName in enumerate(image_list):
+#     img = cv2.imread(os.path.join('images', imgName))
+#     img = Run(model, img, device)
+#     print("Running on ", imgName)
+#     cv2.imwrite(os.path.join('results', imgName), img)
+#     cv2.imshow("Frame", img)
+#
+#     key = cv2.waitKey(1)
+#     if (key& 0xFF)==ord("q"):
+#         break
+
+
+
+cap = cv2.VideoCapture(r"test_source\testvideotrim.mp4")
+count = 0
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+    count+=1
+    img = Run(model, frame, device)
+    cv2.imwrite(os.path.join('results', f"{count}.png"), img)
+    cv2.imshow("Frame", img)
+    print("Processed frame ", count)
+    key = cv2.waitKey(1)
+    if (key& 0xFF)==ord("q"):
+        break
